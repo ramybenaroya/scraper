@@ -1,3 +1,4 @@
+require('./utils/number');
 var config = require('./config');
 var allAdapters = require('./adapters/all');
 var SlackBot = require('slackbots');
@@ -22,17 +23,27 @@ function createBots(){
 
 createBots()
 	.then((bots) => {
-		var adapters = config.endpoints.map((e) => {
-			return new allAdapters[e.adapter](Object.assign({}, e, {
-				slackBot: bots[e.slackBot]
-			}));
+		var adapters = [];
+		config.adapters.forEach((metadata) => {
+			metadata.pages.forEach((i) => {
+				var adapter = new allAdapters[metadata.adapter](Object.assign({}, (config.adaptersCommon || {}), metadata, {
+					slackBot: bots[metadata.slackBot],
+					page: i + 1
+				}));
+				adapters.push(adapter);
+			});
 		});
 
-		function runAdapters(){
-			return Promise.all(adapters.map((a) => {
-				return a.run();
-			}));
+		if (adapters.length) {
+			runAdapter(0);	
 		}
-		setInterval(runAdapters, config.interval);
-		runAdapters();
+		
+		function runAdapter(adapterIndex){
+			adapters[adapterIndex]
+				.run()
+				.then(() => {
+					var nextAdapterIndex = (adapterIndex + 1) % adapters.length
+					setTimeout(runAdapter.bind(null, nextAdapterIndex), config.interval);
+				});
+		}
 	})
