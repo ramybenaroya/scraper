@@ -27,7 +27,8 @@ module.exports = class GoingOutTLVAdapter extends BaseAdapter {
 				var location = `${$td3.find('b').text()} ${$td3.find('span').text()}`;
 				var $td4 = $tr.find('> td').eq(4);
 				var price = $td4.find('b').text();
-				var ticketsUrl = `http://goingout.co.il${$td4.find('a').attr('href')}`;
+				var ticketsUrl = $td4.find('a').attr('href');
+				var ticketsUrl = ticketsUrl ? `http://goingout.co.il${ticketsUrl}` : '';
 				return {
 					id: id,
 					text: (
@@ -60,7 +61,7 @@ ${$.html()}`);
 ${item.img}
 ${item.text}
 ${item.url}
-${item.ticketsUrl || ''}
+${item.ticketsUrl}
 `.trim())
 	}
 }

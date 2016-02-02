@@ -11,23 +11,27 @@ module.exports = {
 			dontPostForReal: false,
 			proxy: 'proxysite',
 			pages: 3,
-			enabled: true
+			enabled: false
 		},
 		{
 			id: 'going_out_tlv',
 			adapter: 'goingOutTLV',
 			url: 'http://www.goingout.co.il/city/tel-aviv',
-			slackChannel: 'testgiv',
-			slackBot: 'yad2',
-			itemsUrl: 'https://shiramy-scraper.firebaseio.com/channels/giv',
+			slackChannel: 'recenttest',
+			slackBot: 'tlv-bot',
+			itemsUrl: 'https://going-out-tlv.firebaseio.com/channels/recenttest',
 			pages: 3,
-			enabled: false
+			enabled: true
 		}
 	],
 	bots: [
 		{
 			name: 'yad2',
 			token: 'xoxb-19514354836-cFCobeZyfApEnWxfDrCQXCh6'
+		},
+		{
+			name: 'tlv-bot',
+			token: 'xoxb-20147444883-XOzJ4ctYHizkqunZ2FYYM45h'
 		}
 	],
 	adaptersCommon: {
