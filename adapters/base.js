@@ -3,7 +3,6 @@ var winston = require('winston');
 var cheerio = require('cheerio');
 var Firebase = require("firebase");
 var request = require('request');
-var client = require('../utils/client');
 
 module.exports = class BaseAdapter {
 	constructor(options){
@@ -15,6 +14,7 @@ module.exports = class BaseAdapter {
 		if (options.page > 1) {
 			this.additionalUrl = this.getPageUrl(options.additionalUrl);	
 		}
+		this.client = options.client;
 		this.slackChannel = options.slackChannel;
 		this.slackBot = options.slackBot;
 		this.response = options.response;
@@ -34,7 +34,7 @@ module.exports = class BaseAdapter {
 		return new Promise((resolve) => {
 			var html;
 			
-			client
+			this.client
 				.init()
 				.url(this.url)
 				.getHTML('body', (err, bodyHtml) => {
@@ -49,7 +49,7 @@ module.exports = class BaseAdapter {
 				var html;
 
 				if (this.additionalUrl) {
-					client
+					this.client
 						.init()
 						.url(this.additionalUrl)
 						.getHTML('body', (err, bodyHtml) => {
