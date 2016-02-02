@@ -34,10 +34,13 @@ module.exports = class BaseAdapter {
 		winston.info('getting document');
 		return new Promise((resolve) => {
 			var html;
-			
-			this.client
-				.init()
-				.url(this.proxy ? this.proxy(this.url) : this.url)
+			var clientPromise = this.client.init();
+			if (this.proxy) {
+				clientPromise = this.proxy(this.url, clientPromise);
+			} else {
+				clientPromise = clientPromise.url(this.url);
+			}
+			clientPromise
 				.getHTML('body', (err, bodyHtml) => {
 					html = bodyHtml;
 				})
@@ -48,11 +51,14 @@ module.exports = class BaseAdapter {
 		}).then(($) => {
 			return new Promise((resolve) => {
 				var html;
-
 				if (this.additionalUrl) {
-					this.client
-						.init()
-						.url(this.proxy ? this.proxy(this.additionalUrl) : this.additionalUrl)
+					var clientPromise = this.client.init();
+					if (this.proxy) {
+						clientPromise = this.proxy(this.url, clientPromise);
+					} else {
+						clientPromise = clientPromise.url(this.url);
+					}
+					clientPromise
 						.getHTML('body', (err, bodyHtml) => {
 							html = bodyHtml;
 						})
