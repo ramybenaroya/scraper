@@ -6,6 +6,10 @@ var RSVP = require('rsvp');
 var hash = RSVP.hash;
 var winston = require('winston');
 var client = require('./utils/client');
+var http = require('http');
+if (process.env.PORT) {
+	http.createServer(() => {}).listen(process.env.PORT);	
+}
 require('./utils/selenium').then(() => {
 	function createBots(){
 		var bots = {};
