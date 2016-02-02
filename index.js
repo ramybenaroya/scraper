@@ -1,6 +1,7 @@
 require('./utils/number');
 var config = require('./config');
 var allAdapters = require('./adapters/all');
+var allProxies = require('./proxies/all');
 var SlackBot = require('slackbots');
 var RSVP = require('rsvp');
 var hash = RSVP.hash;
@@ -17,7 +18,7 @@ require('./utils/selenium').then(() => {
 			var bot = new SlackBot(b);
 			bots[b.name] = new Promise((resolve) => {
 				bot.on('start', () => {
-					winston.info(`Bot ${b.name}started`)
+					winston.info(`Bot ${b.name} started`)
 					resolve(bot)
 				});
 			});
@@ -29,17 +30,19 @@ require('./utils/selenium').then(() => {
 	createBots()
 		.then((bots) => {
 			var adapters = [];
-			config.adapters.forEach((metadata) => {
-				metadata.pages.forEach((i) => {
-					var adapter = new allAdapters[metadata.adapter](Object.assign({}, (config.adaptersCommon || {}), metadata, {
-						slackBot: bots[metadata.slackBot],
-						page: i + 1,
-						client: client,
-						proxy: config.proxies[metadata.proxy || 0]
-					}));
-					adapters.push(adapter);
+			config.adapters
+				.filter(metadata => metadata.enabled)
+				.forEach((metadata) => {
+					metadata.pages.forEach((i) => {
+						var adapter = new allAdapters[metadata.adapter](Object.assign({}, (config.adaptersCommon || {}), metadata, {
+							slackBot: bots[metadata.slackBot],
+							page: i + 1,
+							client: client,
+							proxy: allProxies[metadata.proxy || 0] || null
+						}));
+						adapters.push(adapter);
+					});
 				});
-			});
 
 			if (adapters.length) {
 				runAdapter(0);	

@@ -6,6 +6,7 @@ var request = require('request');
 
 module.exports = class BaseAdapter {
 	constructor(options){
+		this.id = options.id;
 		this.url = options.url;
 		if (options.page > 1) {
 			this.url = this.getPageUrl(options.url);	
@@ -31,7 +32,7 @@ module.exports = class BaseAdapter {
 	}
 
 	getDocumnet(){
-		winston.info('getting document');
+		winston.info(`Adapter::${this.id}: getting document`);
 		return new Promise((resolve) => {
 			var html;
 			var clientPromise = this.client.init();
@@ -42,6 +43,7 @@ module.exports = class BaseAdapter {
 			}
 			clientPromise
 				.getHTML('body', (err, bodyHtml) => {
+					winston.info(`Adapter::${this.id} : Got HTML`)
 					html = bodyHtml;
 				})
 				.end(() => {
@@ -87,7 +89,7 @@ module.exports = class BaseAdapter {
 
 	writeError(message){
 		return new Promise((resolve, reject) => {
-			winston.error(message);
+			winston.error(`Adapter::${this.id} : ${message}`);
 			var errorsUpdate = {};
 			errorsUpdate[new Date().getTime()] = message
 			this.errorsRef.update(errorsUpdate, resolve)
@@ -102,7 +104,7 @@ module.exports = class BaseAdapter {
 					.filter((item) => {
 						return !itemsHash[item.id]
 					});
-				winston.info(`New Items: ${JSON.stringify(newItems, null, '\t')}`);
+				winston.info(`Adapter::${this.id} New Items: ${JSON.stringify(newItems, null, '\t')}`);
 				resolve(newItems);
 			}, reject);
 		});
@@ -111,12 +113,12 @@ module.exports = class BaseAdapter {
 	saveItems(items){
 		return new Promise((resolve, reject) => {
 			var updateHash = {};
-			winston.info(`items length: ${items.length}`);
+			winston.info(`Adapter::${this.id} items length: ${items.length}`);
 			this.firebaseRef.update(updateHash, resolve.bind(null, items));
 			items.forEach((item) => {
 				updateHash[item.id] = item;
 			});
-			winston.info(`Updating new items: ${JSON.stringify(updateHash, null, '\t')}`);
+			winston.info(`Adapter::${this.id} Updating new items: ${JSON.stringify(updateHash, null, '\t')}`);
 			this.firebaseRef.update(updateHash, resolve.bind(null, items));
 		});
 	}
@@ -154,7 +156,7 @@ ${item.url}
 				if (!this.dontPostForReal) {
 					this.slackBot.postMessageToChannel(this.slackChannel, `@channel: ${m}`, {});	
 				}
-				winston.info(`Bot ${this.slackBot.name} posted: ${m}`);
+				winston.info(`Adapter::${this.id} Bot ${this.slackBot.name} posted: ${m}`);
 			}
 		});
 	}
