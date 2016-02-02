@@ -3,11 +3,17 @@ var winston = require('winston');
 var cheerio = require('cheerio');
 var Firebase = require("firebase");
 var request = require('request');
+var client = require('../utils/client');
 
 module.exports = class BaseAdapter {
 	constructor(options){
+		this.url = options.url;
 		if (options.page > 1) {
 			this.url = this.getPageUrl(options.url);	
+		}
+		this.additionalUrl = options.additionalUrl;
+		if (options.page > 1) {
+			this.additionalUrl = this.getPageUrl(options.additionalUrl);	
 		}
 		this.slackChannel = options.slackChannel;
 		this.slackBot = options.slackBot;
@@ -26,18 +32,41 @@ module.exports = class BaseAdapter {
 	getDocumnet(){
 		winston.info('getting document');
 		return new Promise((resolve) => {
-			resolve(cheerio.load(this.response));
+			var html;
+			
+			client
+				.init()
+				.url(this.url)
+				.getHTML('body', (err, bodyHtml) => {
+					html = bodyHtml;
+				})
+				.end(() => {
+					resolve(cheerio.load(html));
+				});
+
 		}).then(($) => {
-			if (this.responseImages) {
-				return {
-					$: $,
-					$$: cheerio.load(this.responseImages)
-				};
-			} else {
-				return {
-					$: $
-				};
-			}
+			return new Promise((resolve) => {
+				var html;
+
+				if (this.additionalUrl) {
+					client
+						.init()
+						.url(this.additionalUrl)
+						.getHTML('body', (err, bodyHtml) => {
+							html = bodyHtml;
+						})
+						.end(() => {
+							resolve({
+								$: $,
+								$$: cheerio.load(html)
+							});
+						});
+				} else {
+					resolve({
+						$: $
+					});
+				}	
+			});
 		});
 	}
 

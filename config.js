@@ -6,6 +6,7 @@ module.exports = {
 		{
 			"adapter": "yad2",
 			"url": "http://www.yad2.co.il/Nadlan/rent.php?AreaID=49&City=&HomeTypeID=&fromRooms=3&untilRooms=4&fromPrice=4000&untilPrice=7000&PriceType=1&FromFloor=&ToFloor=&EnterDate=&Info=%E9%F4%E5&ImgOnly=1",
+			"additionalUrl": "http://www.yad2.co.il/Nadlan/rentGallery.php?AreaID=49&City=&HomeTypeID=&fromRooms=3&untilRooms=4&fromPrice=4000&untilPrice=7000&PriceType=1&FromFloor=&ToFloor=&EnterDate=&Info=%E9%F4%E5&ImgOnly=1&GalleryView=1",
 			"slackChannel": "testgiv",
 			"slackBot": "yad2",
 			"itemsUrl": "https://shiramy-scraper.firebaseio.com/channels/giv",
@@ -35,5 +36,5 @@ module.exports = {
 	"adaptersCommon": {
 		"errorsUrl": "https://shiramy-scraper.firebaseio.com/errors",
 	},
-	"interval": 1000//600000 //10 mins
+	"interval": 600000 //10 mins
 }
