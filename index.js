@@ -31,7 +31,7 @@ require('./utils/selenium').then(() => {
 						slackBot: bots[metadata.slackBot],
 						page: i + 1,
 						client: client,
-						proxy: config.proxies[adapter.proxy || 0]
+						proxy: config.proxies[metadata.proxy || 0]
 					}));
 					adapters.push(adapter);
 				});
