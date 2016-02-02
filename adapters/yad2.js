@@ -2,6 +2,10 @@
 var BaseAdapter = require('./base');
 
 module.exports = class Yad2Adapter extends BaseAdapter {
+	visibleSelector(){
+		return '#menu_strip';	
+	}
+
 	getItems(documents){
 		var $ = documents.$;
 		var $$ = documents.$$;

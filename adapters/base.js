@@ -27,6 +27,10 @@ module.exports = class BaseAdapter {
 		this.errorsRef = new Firebase(options.errorsUrl);
 	}
 
+	visibleSelector(){
+		return null;
+	}
+
 	toString(){
 		return `${this.constructor.name} - ${this.url} - ${this.slackChannel}`;
 	}
@@ -42,6 +46,8 @@ module.exports = class BaseAdapter {
 				clientPromise = clientPromise.url(this.url);
 			}
 			clientPromise
+				.waitForExist(this.visibleSelector(), 60000)
+				.then(() => winston.info(`Adapter::${this.id} : inside ${this.url}`))
 				.getHTML('body', (err, bodyHtml) => {
 					winston.info(`Adapter::${this.id} : Got HTML`)
 					html = bodyHtml;
@@ -61,6 +67,8 @@ module.exports = class BaseAdapter {
 						clientPromise = clientPromise.url(this.url);
 					}
 					clientPromise
+						.waitForExist(this.visibleSelector(), 60000)
+						.then(() => winston.info(`Adapter::${this.id} : inside ${this.additionalUrl}`))
 						.getHTML('body', (err, bodyHtml) => {
 							html = bodyHtml;
 						})
@@ -154,7 +162,7 @@ ${item.url}
 		(messages || []).forEach(m => {
 			if (this.slackBot && this.slackBot.postMessageToChannel) {
 				if (!this.dontPostForReal) {
-					this.slackBot.postMessageToChannel(this.slackChannel, `@channel: ${m}`, {});	
+					this.slackBot.postMessageToChannel(this.slackChannel, m, {});	
 				}
 				winston.info(`Adapter::${this.id} Bot ${this.slackBot.name} posted: ${m}`);
 			}
