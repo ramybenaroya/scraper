@@ -11,7 +11,7 @@ module.exports = {
 			"slackBot": "yad2",
 			"itemsUrl": "https://shiramy-scraper.firebaseio.com/channels/giv",
 			"dontPostForReal": false,
-			"proxy": "boom",
+			"proxy": "hideme",
 			"response": yad2GivSample,
 			"responseImages": yad2GivImgSample,
 			"pages": 3
@@ -37,15 +37,13 @@ module.exports = {
 	"adaptersCommon": {
 		"errorsUrl": "https://shiramy-scraper.firebaseio.com/errors",
 	},
-	"interval": 600000, //10 mins,
+	"interval": 300000, //10 mins,
 	"proxies": {
-		boom(url, clientPromise){
+		hideme(url, clientPromise){
 			return clientPromise
-				.url('http://boomproxy.com')
+				.url('https://hide.me/en/proxy')
 				.setValue('form input[type="text"]', url)
-				.click('#encodeURL')
-				.click("#stripJS")
-				.click('input[type="submit"]')
+				.click('button[type="submit"]')
 				.waitForVisible('#menu_strip', 60000);
 		}
 	}
