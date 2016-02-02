@@ -30,7 +30,8 @@ require('./utils/selenium').then(() => {
 					var adapter = new allAdapters[metadata.adapter](Object.assign({}, (config.adaptersCommon || {}), metadata, {
 						slackBot: bots[metadata.slackBot],
 						page: i + 1,
-						client: client
+						client: client,
+						proxy: config.proxies[proxy || 0]
 					}));
 					adapters.push(adapter);
 				});

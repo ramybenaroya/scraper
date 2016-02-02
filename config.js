@@ -11,6 +11,7 @@ module.exports = {
 			"slackBot": "yad2",
 			"itemsUrl": "https://shiramy-scraper.firebaseio.com/channels/giv",
 			"dontPostForReal": false,
+			"proxy": "hideme",
 			"response": yad2GivSample,
 			"responseImages": yad2GivImgSample,
 			"pages": 3
@@ -36,5 +37,10 @@ module.exports = {
 	"adaptersCommon": {
 		"errorsUrl": "https://shiramy-scraper.firebaseio.com/errors",
 	},
-	"interval": 600000 //10 mins
+	"interval": 600000, //10 mins,
+	"proxies": {
+		hideme(url){
+			return `https://proxy-us.hide.me/go.php?u=`${encodeURIComponent(url)}&b=5&f=norefer`;
+		}
+	}
 }

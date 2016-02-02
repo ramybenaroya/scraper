@@ -14,6 +14,7 @@ module.exports = class BaseAdapter {
 		if (options.page > 1) {
 			this.additionalUrl = this.getPageUrl(options.additionalUrl);	
 		}
+		this.proxy = options.proxy;
 		this.client = options.client;
 		this.slackChannel = options.slackChannel;
 		this.slackBot = options.slackBot;
@@ -36,7 +37,7 @@ module.exports = class BaseAdapter {
 			
 			this.client
 				.init()
-				.url(this.url)
+				.url(this.proxy ? this.proxy(this.url) : this.url)
 				.getHTML('body', (err, bodyHtml) => {
 					html = bodyHtml;
 				})
@@ -51,7 +52,7 @@ module.exports = class BaseAdapter {
 				if (this.additionalUrl) {
 					this.client
 						.init()
-						.url(this.additionalUrl)
+						.url(this.proxy ? this.proxy(this.additionalUrl) : this.additionalUrl)
 						.getHTML('body', (err, bodyHtml) => {
 							html = bodyHtml;
 						})
