@@ -40,7 +40,7 @@ module.exports = {
 	"interval": 600000, //10 mins,
 	"proxies": {
 		hideme(url){
-			return `https://proxy-us.hide.me/go.php?u=`${encodeURIComponent(url)}&b=5&f=norefer`;
+			return `https://proxy-us.hide.me/go.php?u=${encodeURIComponent(url)}&b=5&f=norefer`;
 		}
 	}
 }
